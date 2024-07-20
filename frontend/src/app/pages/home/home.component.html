@@ -1,0 +1,94 @@
+<div style="width: 80%; margin: auto;">
+  <div class="table-header">
+    <div class="input-group">
+      <mat-icon  style="margin-top: 20px;">search</mat-icon>
+      <mat-form-field>
+        <input matInput placeholder="" (input)="applyFilter($event)">
+      </mat-form-field>
+      <button mat-button color="primary" (click)="addNewElement()" style="margin-top: 20px;">CREATE NEW EXTERNAL SYSTEM SETUP</button>
+    </div>
+    <div class="button-group">
+      <button mat-icon-button (click)="refresh()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef> Title </th>
+      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="copy(element)">
+          <mat-icon>file_copy</mat-icon>
+        </button>
+        <button mat-icon-button (click)="delete(element)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="expand row" (click)="expand(element); $event.stopPropagation()">
+          <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+          <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+        <div class="example-element-detail" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-description">
+            <form class="example-element-form" (ngSubmit)="save(element)">
+              <div class="form-group">
+                <label for="name-{{element.title}}">Name:</label>
+                <input id="name-{{element.title}}" [(ngModel)]="element.title" name="title" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="url-{{element.title}}">Base URL:</label>
+                <input id="url-{{element.title}}" [(ngModel)]="element.baseUrl" name="baseUrl" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="authMethod-{{element.title}}">Authentication Method:</label>
+                <select id="authMethod-{{element.title}}" [(ngModel)]="element.authMethod" name="authMethod" class="form-control">
+                  <option value="OAuth2">OAuth2</option>
+                  <option value="API Key">API Key</option>
+                  <option value="Basic Auth">Basic Auth</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="key-{{element.title}}">Key:</label>
+                <input id="key-{{element.title}}" [(ngModel)]="element.key" name="key" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="value-{{element.title}}">Value:</label>
+                <input id="value-{{element.title}}" [(ngModel)]="element.value" name="value" class="form-control" disabled="{{element.id??false}}">
+              </div>
+              <div class="form-group">
+                <label>Authentication Place:</label>
+                <mat-radio-group [(ngModel)]="element.authPlace" name="authPlace">
+                  <mat-radio-button value="Header">Header</mat-radio-button>
+                  <mat-radio-button value="Query Parameters">Query Parameters</mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div class="form-group">
+                <button type="submit" mat-raised-button color="primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expand(element)">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>
