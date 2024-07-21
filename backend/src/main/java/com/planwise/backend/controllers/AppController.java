@@ -14,7 +14,7 @@ public class AppController {
 
     @RequestMapping({
         "/",
-        "/sub"
+        "/planning"
     })
     @ResponseBody
     public Resource serveAngularRoutes() throws IOException {
