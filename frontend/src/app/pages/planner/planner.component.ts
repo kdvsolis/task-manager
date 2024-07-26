@@ -86,7 +86,7 @@ export class PlannerComponent implements AfterViewInit {
     console.log('Play action for element:', element);
     let index = this.dataSource.data.findIndex(x => x.id == element.id);
     if(index > -1){
-      this.dataSource.data[index].status = `${Date.now().toLocaleString()} - Finished`;
+      this.dataSource.data[index].status = `${new Date().toISOString()} - Finished`;
       await this.subSystemSetupService.update(this.dataSource.data[index].id??-1, this.dataSource.data[index]);
     }
     this.changeDetectorRefs.detectChanges();
